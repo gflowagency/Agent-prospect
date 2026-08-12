@@ -12,6 +12,7 @@ const REG_CONTEXT = "Loi n°2025-594 du 30 juin 2025 (articles L223-1 à L223-7 
 const DEFAULT_COMPETITORS = [
   'GMF', 'MAIF', 'MAAF', 'MACIF', 'MMA', 'Direct Assurance', 'AXA', 'Allianz',
   'Groupama', 'Generali', 'LEOCARE', 'Lovys', 'Acheel', 'Luko', 'Crédit Mutuel',
+  'Alan', 'Seyna', 'Descartes Insurance', 'Mila',
 ]
 
 const FINDINGS_SCHEMA = {
@@ -20,6 +21,8 @@ const FINDINGS_SCHEMA = {
     competiteur: { type: 'string' },
     dispositifs_identifies: { type: 'array', items: { type: 'string' } },
     communication_publique_dediee: { type: 'string' },
+    article_pedagogique_grand_public: { type: 'string', description: "Existence et description d'un article/FAQ/page blog expliquant la loi opt-in aux prospects/clients, avec URL si trouvé, sinon 'non trouvé'" },
+    case_a_cocher_consentement: { type: 'string', description: "Ce qui a été observé sur le site du concurrent lui-même (devis, souscription, contact, 'être rappelé') concernant une case à cocher ou un mécanisme explicite de consentement au démarchage téléphonique, avec URL de la page si trouvé, sinon 'non vérifié' ou 'non trouvé'" },
     exposition_a_la_loi: { type: 'string', enum: ['faible', 'moderee', 'elevee'] },
     changements_depuis_dernier_rapport: { type: 'string' },
     sources: {
@@ -74,7 +77,16 @@ const results = await pipeline(
     `martech, croissance du canal digital). Priorise les informations récentes et datées. Cite systématiquement ` +
     `tes sources (titre + URL). Si rien de spécifique n'est trouvé, dis-le explicitement plutôt que d'inventer ` +
     `— indique aussi l'exposition probable de ce concurrent à la loi selon son modèle de distribution ` +
-    `(digital pur / réseau d'agents / centre d'appels sortant / bancassurance).`,
+    `(digital pur / réseau d'agents / centre d'appels sortant / bancassurance).\n\n` +
+    `Vérifie en particulier deux choses concrètes, DIRECTEMENT sur le site de "${name}" (pas seulement via la ` +
+    `presse) : 1) un article, une page FAQ ou un post de blog qui explique la loi opt-in au grand public ` +
+    `(ex: "pourquoi on ne peut plus vous appeler sans votre accord") — indique l'URL exacte si trouvé ; ` +
+    `2) une case à cocher ou un mécanisme explicite de consentement au démarchage téléphonique sur le ` +
+    `parcours de devis/souscription en ligne, sur le formulaire de contact, ou sur une page type "être rappelé ` +
+    `par téléphone" — décris ce que tu observes (texte exact de la case si possible) et indique l'URL de la ` +
+    `page. Si tu ne peux pas accéder au parcours de devis (ex: nécessite des données personnelles), dis-le et ` +
+    `base-toi sur ce qui est visible publiquement (mentions légales, politique de confidentialité, CGU/CGV, ` +
+    `page contact).`,
     { label: `recherche:${name}`, phase: 'Recherche par concurrent', schema: FINDINGS_SCHEMA }
   )
 )
@@ -93,9 +105,12 @@ const synthesis = await agent(
       `rapport" avec les évolutions concrètes détectées :\n\n${previousReport}\n\n`
     : `Aucun rapport précédent fourni — c'est la première édition, pas de section "changements".\n\n`) +
   `Produis un rapport structuré avec : 1) rappel synthétique du cadre réglementaire, 2) tableau comparatif des ` +
-  `${findings.length} concurrents (dispositif le plus notable, exposition à la loi, communication publique), ` +
-  `3) regroupement en familles de réponses stratégiques, 4) ce qui a changé depuis le dernier rapport le cas ` +
-  `échéant, 5) limites de la veille (sources non trouvées ou non vérifiées), 6) implication stratégique pour ` +
+  `${findings.length} concurrents (dispositif le plus notable, exposition à la loi, communication publique, ` +
+  `présence d'un article pédagogique grand public, présence d'une case à cocher de consentement sur le site), ` +
+  `3) regroupement en familles de réponses stratégiques, 4) une section dédiée récapitulant qui a publié un ` +
+  `article pédagogique et qui a une case à cocher de consentement visible (avec URLs), car ce sont les deux ` +
+  `signaux concrets les plus recherchés par G.Flow, 5) ce qui a changé depuis le dernier rapport le cas ` +
+  `échéant, 6) limites de la veille (sources non trouvées ou non vérifiées), 7) implication stratégique pour ` +
   `G.Flow (quels segments de concurrents sont des cibles commerciales prioritaires pour des solutions de ` +
   `conformité / prospection alternative). Termine par une liste consolidée des sources citées.`,
   { label: 'synthese', phase: 'Synthèse comparative', schema: SYNTHESIS_SCHEMA }
