@@ -84,7 +84,33 @@ Pour un acteur externe (solution de conformité, plateforme de gestion du consen
 
 ---
 
-## 6. Points d'attention (à vérifier / à relire avant diffusion)
+## 6. Ce qui est visible directement sur le site de chaque concurrent
+
+Contrairement au reste du rapport (basé sur de la presse tierce), cette section ne cite que du contenu trouvé **sur le domaine du concurrent lui-même** (recherche `site:domaine.fr`). L'accès direct (navigateur/WebFetch) à ces sites est bloqué par la politique réseau de cet environnement — ceci s'appuie donc sur les extraits indexés, pas sur une navigation réelle.
+
+| Concurrent | Élément trouvé sur leur site | Nature |
+|---|---|---|
+| **MAIF** | Outil de gestion du consentement NIO, développé en interne | Mécanisme réel |
+| **Acheel** | [Politique de confidentialité](https://v2.acheel.com/privacy) : consentement explicite documenté, engagement d'arrêt du contact sur demande | Mécanisme réel |
+| **Luko** | Politique de confidentialité : l'appel commercial pour détailler des offres est conditionné au consentement préalable | Mécanisme réel |
+| **Groupama** | [Protection de vos données personnelles](https://www.groupama.fr/donnees-personnelles/) : contact SMS/email/push/téléphone **« avec votre accord »** | Mécanisme réel (formulation opt-in) |
+| **Crédit Mutuel** | [Se faire rappeler par téléphone](https://www.creditmutuel.fr/fr/contacts/etre-rappele-par-telephone.html) : consentement explicite formulé dans le formulaire | Mécanisme réel |
+| **LEOCARE** | [Article de blog dédié](https://leocare.eu/fr/blog/loi-fin-demarchage-telephonique/) expliquant la loi | Communication |
+| **Generali** | [Page dédiée aux règles du démarchage téléphonique](https://www.generali.fr/professionnel/actu/regles-demarchage-telephonique/) (destinée aux professionnels) | Communication |
+| **GMF** | [Être rappelé par un conseiller](https://mon-espace-societaire.gmf.fr/contact/recapitulatif-rappel-telephonique) | Formulaire inbound, aucune mention de la loi |
+| **Allianz** | [Être rappelé par un conseiller](https://www.allianz.fr/assurance-particulier/service-client/aide-a-la-connexion/demande-de-rappel.html) (horaires précisés) | Formulaire inbound, aucune mention de la loi |
+| **Direct Assurance** | [Comment éviter le démarchage téléphonique](https://www.direct-assurance.fr/actualites/blog/comment-eviter-le-demarchage-telephonique) (blog) + [centre d'aide](https://aide.direct-assurance.fr/auto/modifier-mes-informations-personnelles/comment-eviter-le-demarchage-telephonique) | Communication (angle conseil au client, pas conformité annoncée) |
+| **MAAF** | Mentions légales/CG : « rappelé sauf si vous êtes déjà client ou avez transmis votre numéro » (formule Bloctel classique, répétée sur de nombreuses pages produit) | ⚠️ Boilerplate Bloctel, pas de mise à jour visible pour le nouvel opt-in |
+| **MACIF** | [Protection des données personnelles](https://www.macif.fr/assurance/particuliers/donnees-personnelles) : même formule + rappel après un devis en espace client connecté | ⚠️ Boilerplate Bloctel |
+| **MMA** | [Page dédiée Bloctel](https://www.mma.fr/mentions-legales/bloctel.html) : même formule | ⚠️ Boilerplate Bloctel |
+| **AXA** | Pages données personnelles / cookies (mestravaux.axa.fr, eol.axa.fr) : même formule | ⚠️ Boilerplate Bloctel |
+| **Lovys** | Rien trouvé sur leur propre domaine | — |
+
+**Lecture :** 5 acteurs (MAAF, MACIF, MMA, AXA, et dans une moindre mesure GMF/Allianz) affichent une mention légale qui reprend l'ancienne exception **Bloctel/opt-out** ("sauf si déjà client ou numéro transmis") plutôt qu'un dispositif explicitement mis à jour pour le nouvel **opt-in strict**. Présence d'une mention ≠ preuve de conformité au nouveau régime — c'est le point d'attention principal de cette mise à jour.
+
+---
+
+## 7. Points d'attention (à vérifier / à relire avant diffusion)
 
 - **Correction apportée le 11/08/2026 (v2) :** la première version de ce rapport citait une page "entreprise.maif.fr" non vérifiée pour le dispositif NIO de la MAIF. Après recherche complémentaire, NIO s'avère être un **projet open source publié par la MAIF elle-même** (dépôt [github.com/MAIF/nio](https://github.com/MAIF/nio), documentation [maif.github.io/nio](https://maif.github.io/nio/)) — une source nettement plus solide, désormais utilisée ci-dessus. Ce genre de correction peut se reproduire : certaines affirmations reposent sur des extraits de recherche (snippets) plutôt que sur la lecture intégrale d'une page.
 - **MACIF — lien avec la loi non confirmé.** La fermeture des 3 centres de relation client est un fait vérifié, mais le lien de cause à effet avec la loi opt-in est une **hypothèse de notre part**, pas une déclaration de MACIF. Les motifs officiellement communiqués (absentéisme, conditions de travail) sont différents. À ne pas présenter comme un fait établi dans une communication externe.
@@ -92,6 +118,8 @@ Pour un acteur externe (solution de conformité, plateforme de gestion du consen
 - **Silence du marché = donnée fragile.** L'absence de communication publique trouvée pour 12 des 15 acteurs ne prouve pas l'absence d'action — seulement l'absence d'action **rendue publique et indexée** au moment de la recherche (jour J de l'entrée en vigueur). Un suivi à J+15/J+30 est nécessaire pour confirmer ou infirmer ce constat.
 - **Aucun test de parcours client réel effectué.** Ni les formulaires de devis, ni les cases de consentement, ni les tunnels "être rappelé" des 15 sites n'ont été testés en navigation réelle — tout repose sur de la recherche documentaire. C'est la limite la plus importante à combler pour une analyse actionnable (voir recommandation ci-dessous).
 - **Recommandation de prochaine étape :** un test de parcours réel (navigateur automatisé) sur 4-5 sites clés — MAIF, MACIF, MAAF, LEOCARE, Direct Assurance — donnerait des preuves de premier niveau (capture d'écran de la case de consentement, formulation exacte) plutôt que des déclarations rapportées par la presse.
+- **Navigation réelle impossible depuis cet environnement (vérifié le 11/08/2026).** L'environnement d'exécution bloque, au niveau réseau (politique d'egress de la session), tout accès direct aux domaines des concurrents — testé avec `curl` brut (403 sur le tunnel HTTPS pour maif.fr, leocare.eu, macif.fr, acheel.com, et même web.archive.org), donc un navigateur automatisé (Playwright) échouerait de la même façon. La section 6 ci-dessus a donc été construite via des recherches ciblées `site:domaine.fr`, pas via une navigation réelle. Pour un test de parcours effectif, il faut soit ajuster la politique réseau de cet environnement (paramètres d'environnement Claude Code), soit l'exécuter depuis un poste non bridé.
+- **Formule "Bloctel" ≠ conformité au nouvel opt-in.** MAAF, MACIF, MMA et AXA affichent une mention légale reprenant l'ancienne exception opt-out ("rappelé sauf si déjà client ou numéro transmis") plutôt qu'un dispositif visiblement mis à jour pour l'opt-in strict. Ne pas confondre présence d'une mention Bloctel avec preuve de mise en conformité.
 
 ---
 
