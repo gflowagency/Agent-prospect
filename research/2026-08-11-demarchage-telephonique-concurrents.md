@@ -23,7 +23,7 @@
 | Acteur | Modèle de distribution | Exposition à la loi | Dispositif confirmé le plus notable | Communication publique dédiée |
 |---|---|---|---|---|
 | **GMF** | Réseau direct/salarié (Téléassurances, ~9-10 centres, GMF Conseil) | Modérée (base sociétaires, dérogation applicable) | Lauréat Podium Relation Client 2026 (1er assurance), progrès cités sur "traçabilité" | Non trouvée |
-| **MAIF** | Direct, sans intermédiaire | Faible/modérée — en avance sur la conformité | Plateforme de gestion du consentement **NIO** + stratégie opt-in SMS/RCS/email documentée | Participation à une conférence sectorielle (All4Customer) sur le sujet |
+| **MAIF** | Direct, sans intermédiaire | Faible/modérée — en avance sur la conformité | **NIO** : outil open source développé et publié par la MAIF elle-même pour gérer, de façon centralisée, le consentement aux communications commerciales (email, SMS, téléphone, courrier) — cf. [dépôt GitHub officiel](https://github.com/MAIF/nio) | Participation à une conférence sectorielle (All4Customer) sur le sujet |
 | **MAAF** | Réseau direct/agences (Covéa) | Plus élevée — antécédent réglementaire | **Sanction DGCCRF 69 500 €** (2025/2026, manquement Bloctel) + CRM "ECLA" (Salesforce) | Non trouvée |
 | **MACIF** | Direct, sans intermédiaire | Élevée — réorganisation en cours | **Fermeture de 3 centres de relation client commerciaux** (dont Vénissieux, 51 postes) ; motif officiel non lié à la loi | Non trouvée |
 | **MMA** (Covéa) | Réseau d'agents généraux (SAGAMM) + courtiers | Faible — couverte par la dérogation "contrat en cours" | Aucun dispositif spécifique documenté | Non trouvée |
@@ -53,7 +53,7 @@ Ces acteurs s'appuient sur une relation contractuelle et humaine déjà établie
 ### C. Les mutuelles directes en transformation — bascule CRM / self-care
 **MAIF, MAAF, MACIF, GMF, Generali.**
 Ces acteurs, plus dépendants historiquement du contact téléphonique de masse (centres de relation client), montrent les signaux les plus concrets de transformation :
-- **MAIF** est la plus avancée et la plus transparente : plateforme de consentement dédiée (NIO), stratégie multicanale opt-in documentée (email, SMS, RCS), chatbot IA, application dans ChatGPT.
+- **MAIF** est la plus avancée et la plus transparente : NIO — un outil de gestion du consentement qu'elle a développé et publié elle-même en open source ([github.com/MAIF/nio](https://github.com/MAIF/nio), doc : [maif.github.io/nio](https://maif.github.io/nio/)) pour centraliser les préférences de contact (email, SMS, téléphone, courrier) — plus une stratégie multicanale opt-in documentée par des cas clients tiers (RCS), un chatbot IA, une application dans ChatGPT.
 - **MAAF** cumule un antécédent de sanction DGCCRF (Bloctel) et un investissement CRM dédié ("ECLA" sur Salesforce, poste "Pilote d'engagement CRM").
 - **MACIF** est le seul acteur où un impact organisationnel concret est documenté : fermeture de 3 centres d'appels commerciaux (dont Vénissieux, 51 postes), bien que la direction n'attribue pas officiellement ces fermetures à la loi.
 - **GMF** ne montre pas de dispositif spécifique documenté mais consolide sa relation client (1er du secteur au Podium Relation Client 2026, devant MAIF pour la première fois en 21 ans).
@@ -84,6 +84,17 @@ Pour un acteur externe (solution de conformité, plateforme de gestion du consen
 
 ---
 
+## 6. Points d'attention (à vérifier / à relire avant diffusion)
+
+- **Correction apportée le 11/08/2026 (v2) :** la première version de ce rapport citait une page "entreprise.maif.fr" non vérifiée pour le dispositif NIO de la MAIF. Après recherche complémentaire, NIO s'avère être un **projet open source publié par la MAIF elle-même** (dépôt [github.com/MAIF/nio](https://github.com/MAIF/nio), documentation [maif.github.io/nio](https://maif.github.io/nio/)) — une source nettement plus solide, désormais utilisée ci-dessus. Ce genre de correction peut se reproduire : certaines affirmations reposent sur des extraits de recherche (snippets) plutôt que sur la lecture intégrale d'une page.
+- **MACIF — lien avec la loi non confirmé.** La fermeture des 3 centres de relation client est un fait vérifié, mais le lien de cause à effet avec la loi opt-in est une **hypothèse de notre part**, pas une déclaration de MACIF. Les motifs officiellement communiqués (absentéisme, conditions de travail) sont différents. À ne pas présenter comme un fait établi dans une communication externe.
+- **Accès direct bloqué à de nombreuses sources.** L'environnement de recherche bloque la lecture directe (WebFetch) de la plupart des domaines testés (Argus de l'assurance, News Assurances Pro, economie.gouv.fr, maif.fr, maif.github.io, lemagit.fr...). L'analyse s'appuie donc sur des extraits indexés par la recherche web, pas sur la lecture intégrale des pages — un risque de nuance perdue ou de citation hors contexte existe. Une vérification manuelle (accès direct depuis un poste non bridé) est recommandée avant toute utilisation commerciale ou publique de ce rapport.
+- **Silence du marché = donnée fragile.** L'absence de communication publique trouvée pour 12 des 15 acteurs ne prouve pas l'absence d'action — seulement l'absence d'action **rendue publique et indexée** au moment de la recherche (jour J de l'entrée en vigueur). Un suivi à J+15/J+30 est nécessaire pour confirmer ou infirmer ce constat.
+- **Aucun test de parcours client réel effectué.** Ni les formulaires de devis, ni les cases de consentement, ni les tunnels "être rappelé" des 15 sites n'ont été testés en navigation réelle — tout repose sur de la recherche documentaire. C'est la limite la plus importante à combler pour une analyse actionnable (voir recommandation ci-dessous).
+- **Recommandation de prochaine étape :** un test de parcours réel (navigateur automatisé) sur 4-5 sites clés — MAIF, MACIF, MAAF, LEOCARE, Direct Assurance — donnerait des preuves de premier niveau (capture d'écran de la case de consentement, formulation exacte) plutôt que des déclarations rapportées par la presse.
+
+---
+
 ## Sources principales
 
 - [Légifrance — Chapitre III, Consentement au démarchage téléphonique](https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006069565/LEGISCTA000032221441/2026-08-11)
@@ -92,6 +103,8 @@ Pour un acteur externe (solution de conformité, plateforme de gestion du consen
 - [Argus de l'assurance — "Nous ne sommes pas assez mûrs pour nous exprimer"](https://www.argusdelassurance.com/reglementation/europe/nous-ne-sommes-pas-assez-murs-pour-nous-exprimer-sur-le-demarchage-telephonique-courtiers-et-assureurs-seront-ils-prets-a-temps.GGONUSGOWJIFPAJL7SGPYSN77Q.html)
 - [Argus de l'assurance — La MACIF poursuit la réorganisation de ses centres de relation client](https://www.argusdelassurance.com/mutuelles/macif/la-macif-poursuit-la-reorganisation-de-ses-centres-de-relation-client-une-troisieme-fermeture-annoncee-une-implantation-dans-une-nouvelle-ville-prevue.QNOXBWPXHRDV3GGPAFATSQ7TPM.html)
 - [News Assurances Pro — MAAF sanctionnée par la DGCCRF](https://www.newsassurancespro.com/demarchage-telephonique-maaf-assurances-sanctionne-par-la-dgccrf/01691454836)
+- [MAIF/nio — dépôt GitHub officiel de l'outil de gestion du consentement](https://github.com/MAIF/nio)
+- [Niõ by MAIF — documentation officielle](https://maif.github.io/nio/)
 - [LinkMobility — MAIF renforce sa relation client grâce au RCS](https://www.linkmobility.com/fr/ressources/success-stories/maif-renforce-l-excellence-de-sa-relation-client-grace-au-rcs)
 - [Kwanko — Démarchage téléphonique et lead generation, pourquoi la loi du 11 août 2026 change la donne](https://www.kwanko.com/fr/academy/affiliation/demarchage-telephonique-et-lead-generation-pourquoi-la-loi-du-11-aout-2026-change-la-donne-pour-votre-strategie-dacquisition/)
 - [LEOCARE — Démarchage téléphonique : la fin du harcèlement prévue pour 2026](https://leocare.eu/fr/blog/loi-fin-demarchage-telephonique/)
