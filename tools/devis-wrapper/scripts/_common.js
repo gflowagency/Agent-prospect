@@ -82,12 +82,18 @@ async function clickFirstMatchingButton(page, textOptions) {
   }, textOptions)
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
   const steps = []
-  await page.goto(entryUrl, { waitUntil: 'networkidle', timeout: 45000 })
+  // "networkidle2" (syntaxe Puppeteer, pas "networkidle" de Playwright) : Browserless
+  // expose une API façon Puppeteer sur /function.
+  await page.goto(entryUrl, { waitUntil: 'networkidle2', timeout: 45000 })
 
   for (let i = 0; i < maxSteps; i++) {
-    await page.waitForTimeout(1500)
+    await sleep(1500)
     const [consentMatches, piiWall, screenshot] = await Promise.all([
       scanConsentCheckboxes(page),
       detectPiiWall(page),
@@ -115,7 +121,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       break
     }
     steps[steps.length - 1].clickedToAdvance = clickedLabel
-    await page.waitForTimeout(1000)
+    await sleep(1000)
   }
 
   return {
