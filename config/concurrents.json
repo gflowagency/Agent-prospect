@@ -1,0 +1,31 @@
+{
+  "reglementation_surveillee": {
+    "nom": "Interdiction du démarchage téléphonique commercial sans consentement préalable (bascule opt-in)",
+    "texte": "Loi n°2025-594 du 30 juin 2025, articles L223-1 à L223-7 du code de la consommation",
+    "entree_en_vigueur": "2026-08-11",
+    "source_officielle": "https://www.service-public.gouv.fr/particuliers/actualites/A19003",
+    "source_legifrance": "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006069565/LEGISCTA000032221441/2026-08-11",
+    "resume": "Passage d'un régime opt-out (Bloctel) à un régime opt-in strict : tout démarchage téléphonique commercial est interdit sauf consentement préalable, libre, spécifique, éclairé, univoque, révocable et prouvable. Dérogation : appels vers des clients existants dans le cadre d'une relation contractuelle en cours (suivi de contrat, produits complémentaires). Sanctions jusqu'à 75 000€ (personne physique) / 375 000€ (entreprise), nullité possible du contrat."
+  },
+  "concurrents": [
+    { "nom": "GMF", "site": "https://www.gmf.fr", "segment": "mutuelle_direct" },
+    { "nom": "MAIF", "site": "https://www.maif.fr", "segment": "mutuelle_direct" },
+    { "nom": "MAAF", "site": "https://www.maaf.fr", "segment": "mutuelle_direct" },
+    { "nom": "MACIF", "site": "https://www.macif.fr", "segment": "mutuelle_direct" },
+    { "nom": "MMA", "site": "https://www.mma.fr", "segment": "reseau_agents" },
+    { "nom": "Direct Assurance", "site": "https://www.direct-assurance.fr", "segment": "digital_pur" },
+    { "nom": "AXA", "site": "https://www.axa.fr", "segment": "multicanal" },
+    { "nom": "Allianz", "site": "https://www.allianz.fr", "segment": "reseau_agents" },
+    { "nom": "Groupama", "site": "https://www.groupama.fr", "segment": "reseau_decentralise" },
+    { "nom": "Generali", "site": "https://www.generali.fr", "segment": "multicanal" },
+    { "nom": "LEOCARE", "site": "https://leocare.eu", "segment": "digital_pur" },
+    { "nom": "Lovys", "site": "https://www.lovys.com", "segment": "digital_pur" },
+    { "nom": "Acheel", "site": "https://www.acheel.com", "segment": "digital_pur" },
+    { "nom": "Luko", "site": "https://www.luko.eu", "segment": "digital_pur" },
+    { "nom": "Crédit Mutuel", "site": "https://www.creditmutuel.fr", "segment": "bancassurance" },
+    { "nom": "Alan", "site": "https://alan.com/fr", "segment": "digital_pur", "note": "néo-assureur agréé ACPR, santé — ajouté 2026-08-12" },
+    { "nom": "Seyna", "site": "https://www.seyna.eu", "segment": "porteur_de_risque_b2b", "note": "néo-assureur agréé ACPR, porteur de risque pour insurtechs (B2B, pas de distribution directe grand public) — ajouté 2026-08-12 ; URL corrigée le 2026-09-10 (.eu, pas .co)" },
+    { "nom": "Descartes Insurance", "site": "https://descartesunderwriting.com/about/descartes-insurance", "segment": "hors_perimetre_b2b", "note": "identité clarifiée le 2026-09-10 : porteur de risque ACPR 100% corporate (cyber, risques techniques, agriculture), sœur de Descartes Underwriting (MGA) — AUCUNE activité B2C, hors champ de la loi opt-in qui vise les consommateurs. Conservé dans le périmètre à titre de veille passive uniquement." },
+    { "nom": "Mila", "site": "https://www.mila.fr", "segment": "digital_pur", "note": "néo-assureur agréé ACPR, assurance de niche — ajouté 2026-08-12" }
+  ]
+}
