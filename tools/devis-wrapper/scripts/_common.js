@@ -15,6 +15,9 @@ const CONSENT_KEYWORDS = [
 const PII_FIELD_KEYWORDS = [
   'nom', 'prénom', 'prenom', 'téléphone', 'telephone', 'email', 'e-mail',
   'date de naissance', 'adresse', 'code postal',
+  // pas des données "personnelles" au sens strict, mais identifiantes (rattachées
+  // à un vrai véhicule/permis réel) : même garde-fou, on ne fabrique rien.
+  'plaque', 'immatriculation', 'permis de conduire', 'numéro de permis',
 ]
 const NEXT_BUTTON_TEXT = [
   'suivant', 'continuer', "c'est parti", 'commencer', 'obtenir mon devis',
@@ -58,12 +61,21 @@ async function scanConsentCheckboxes(page) {
 
 async function detectPiiWall(page) {
   return page.evaluate(({ keywords }) => {
-    const inputs = Array.from(document.querySelectorAll('input[required], input[aria-required="true"]'))
+    // Volontairement large : pas seulement input[required]. Beaucoup de
+    // formulaires modernes (composants React/masques de saisie) bloquent le
+    // bouton suivant via du JS plutôt que l'attribut HTML required — s'y fier
+    // uniquement raterait des murs de données identifiantes (ex: plaque
+    // d'immatriculation chez Acheel, ni required ni aria-required en HTML).
+    const skipTypes = new Set(['hidden', 'checkbox', 'radio', 'submit', 'button'])
+    const inputs = Array.from(document.querySelectorAll('input, textarea')).filter((el) => {
+      if (el.tagName === 'INPUT' && skipTypes.has((el.type || '').toLowerCase())) return false
+      return el.offsetParent !== null
+    })
     const hits = []
     for (const input of inputs) {
       const label =
         (input.labels && input.labels[0] && input.labels[0].innerText) ||
-        input.placeholder || input.name || input.id || ''
+        input.placeholder || input.getAttribute('aria-label') || input.name || input.id || ''
       const norm = label.toLowerCase()
       if (keywords.some((k) => norm.includes(k))) hits.push(label.trim())
     }
