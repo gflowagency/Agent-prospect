@@ -13,6 +13,8 @@
 
 La loi n°2025-594 du 30 juin 2025 (articles L223-1 à L223-7 du code de la consommation), précisée par le **décret d'application n°2026-662 du 23 juillet 2026**, est entrée en vigueur le **11 août 2026**. Elle fait basculer le démarchage téléphonique commercial d'un régime **opt-out** (Bloctel) à un régime **opt-in strict** : consentement préalable, libre, spécifique, éclairé, univoque et révocable, avec preuve à l'appui et **validité limitée à un an**. Bloctel a cessé d'exister à cette date.
 
+**Précision apportée via Legal Data Hunter (source primaire Légifrance/JORF)** : le décret n°2026-662, intitulé *« relatif aux modalités de recueil, de conservation et de retrait du consentement du consommateur à des fins de prospection commerciale par voie téléphonique »*, a été pris après avis de la CNIL (délibération n°2026-065 du 18 juin 2026) et consultation du Conseil d'État (section des finances), signé le 23/07/2026 par le Premier ministre Sébastien Lecornu et le ministre des PME Serge Papin. Source : [Légifrance/JORF — JORFTEXT000054483939](https://www.legifrance.gouv.fr/loda/id/JORFTEXT000054483939).
+
 **Dérogation unique** : les appels vers des **clients existants**, dans le cadre de l'exécution d'un contrat en cours, restent autorisés sans consentement préalable spécifique.
 
 **Sanctions** : jusqu'à 75 000 € (personne physique) / 375 000 € (entreprise), nullité possible du contrat conclu irrégulièrement.
@@ -148,6 +150,7 @@ Cette édition, la première appuyée sur une vérification directe fiable du co
 - **Panne WebSearch confirmée pendant une partie de cette édition** (avant la connexion des nouveaux connecteurs) — sans impact final sur ce rapport, mais à surveiller pour les éditions futures utilisant encore les outils par défaut.
 - **Pages dynamiques/formulaires non entièrement inspectables** : plusieurs formulaires de rappel (GMF, MACIF) n'ont pas pu être menés jusqu'au bout (nécessitent des données personnelles réelles ou timeout au fetch) — le texte exact de leur case de consentement reste à vérifier.
 - **« Descartes Insurance »** est maintenant identifié avec certitude comme hors périmètre B2C — recommandation de le signaler explicitement dans tout livrable client plutôt que de le laisser dans un tableau comparatif sans distinction.
+- **Test des connecteurs Legal Data Hunter et Crustdata (round 2, même journée).** Legal Data Hunter a apporté une vraie plus-value (texte officiel du décret avec métadonnées précises, cf. §1). Crustdata (recherche LinkedIn par mot-clé) a été testé sur les 7 concurrents encore « indéterminés » (Direct Assurance, AXA, Acheel, Alan, Groupama, Lovys, Mila) : **aucun résultat spécifique à ces entreprises** — les recherches remontent surtout des commentaires génériques de tiers du secteur ou du bruit sans rapport. Aucune nouvelle preuve exploitée dans ce rapport suite à ce test ; à ne pas re-tenter sans affiner la stratégie de mots-clés (ex. cibler directement les pages LinkedIn officielles des entreprises plutôt qu'une recherche par mot-clé large).
 
 ---
 
