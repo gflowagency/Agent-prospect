@@ -20,6 +20,10 @@ const NEXT_BUTTON_TEXT = [
   'suivant', 'continuer', "c'est parti", 'commencer', 'obtenir mon devis',
   "j'accepte", 'valider',
 ]
+const COOKIE_BANNER_BUTTON_TEXT = [
+  'tout accepter', 'accepter et fermer', 'accepter tout', "j'accepte tout",
+  'accepter', 'autoriser', 'ok pour moi', "j'ai compris",
+]
 
 async function scanConsentCheckboxes(page) {
   return page.evaluate(({ keywords }) => {
@@ -92,12 +96,21 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
   // expose une API façon Puppeteer sur /function.
   await page.goto(entryUrl, { waitUntil: 'networkidle2', timeout: 45000 })
 
+  await sleep(1000)
+  const cookieBannerDismissed = await clickFirstMatchingButton(page, COOKIE_BANNER_BUTTON_TEXT)
+  if (cookieBannerDismissed) await sleep(800)
+
   for (let i = 0; i < maxSteps; i++) {
     await sleep(1500)
     const [consentMatches, piiWall, screenshot] = await Promise.all([
       scanConsentCheckboxes(page),
       detectPiiWall(page),
-      page.screenshot({ type: 'jpeg', quality: 60 }).then((b) => b.toString('base64')),
+      // encoding: 'base64' demandé directement à Puppeteer : dans le sandbox
+      // Browserless, l'objet renvoyé par screenshot() sans cette option n'est
+      // pas un vrai Buffer Node, donc un .toString('base64') manuel après coup
+      // produit un Array.prototype.toString() (liste d'octets séparés par des
+      // virgules) au lieu d'un vrai base64 — bug trouvé sur un run réel.
+      page.screenshot({ type: 'jpeg', quality: 60, encoding: 'base64' }),
     ])
 
     steps.push({
@@ -127,6 +140,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
   return {
     target,
     entryUrl,
+    cookieBannerDismissed: cookieBannerDismissed || null,
     steps,
     summary: {
       anyConsentCheckboxFound: steps.some((s) => s.consentCheckboxesFound.length > 0),
