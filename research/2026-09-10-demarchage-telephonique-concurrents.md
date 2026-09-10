@@ -37,7 +37,7 @@ Sources : [Légifrance — L223-1 à L223-7](https://www.legifrance.gouv.fr/code
 | **Allianz** | Modérée | Page « être rappelé » vérifiée : **aucune case de consentement explicite**, pas de mention de durée de validité (1 an) exigée par le décret | Non | Absent — point de non-conformité potentiel |
 | **Groupama** | Modérée | Page données perso reformulée : consentement mentionné pour la pub personnalisée, mais pas spécifiquement pour le démarchage téléphonique | Non | Partiel, formulation imprécise |
 | **Generali** | Modérée | Article existe (nouvelle URL, orienté professionnels/courtiers, pas grand public) | Oui, mais B2B | **Oui — texte exact trouvé** sur un formulaire de rappel d'agence (cité §5) |
-| **LEOCARE** | Faible | Article de blog **renouvelé le 16/07/2026**, combine mesure Arcep anti-spoofing et rappel de la loi opt-in | **Oui**, confirmé et mis à jour | Non vérifié sur le tunnel de devis |
+| **LEOCARE** | Faible | Article de blog (màj 16/07/2026) traitant **à titre principal** du bouclier anti-usurpation Arcep (1ᵉʳ janvier) — la loi du 11 août n'y est que mentionnée en contexte, en fin d'article *(voir correction §5bis)* | Non — pas dédié à la loi opt-in | Non vérifié sur le tunnel de devis |
 | **Lovys** | Faible | Rien trouvé même après vérification directe des CGU/confidentialité/accueil — cohérent avec modèle inbound | Non | Non trouvé |
 | **Acheel** | Faible à modérée | Consentement intégré aux CGU (acceptation globale), pas un mécanisme dédié et documenté séparément | Non vérifié (recherche interrompue) | Via CGU uniquement |
 | **Luko** | *À requalifier* | **Absorption confirmée** : « Luko » n'est plus qu'une marque commerciale opérée par Allianz Direct Versicherungs-AG — plus d'entité/politique propre | — | Suivre désormais **Allianz Direct** |
@@ -58,10 +58,10 @@ GMF, MACIF. GMF a ajouté une mention légale conforme sur le fond mais peu visi
 MMA (page Bloctel non mise à jour, mais réseau d'agents structurellement peu exposé), Allianz (page de rappel non conforme aux nouvelles exigences), Crédit Mutuel (mécanisme de consentement réel mais à la portée trop large). Ces acteurs ne sont pas dans l'urgence business, mais laissent des traces de non-conformité formelle sur leurs pages publiques.
 
 **C — Communication pédagogique engagée**
-MAAF (FAQ claire et maintenue), LEOCARE (article renouvelé), Generali (article B2B + case à cocher concrète et bien formulée sur un formulaire d'agence). Trois profils différents mais tous démontrent un effort de mise en visibilité, à des degrés d'aboutissement variables.
+MAAF (FAQ claire et maintenue), Generali (article B2B + case à cocher concrète et bien formulée sur un formulaire d'agence). Deux profils différents mais tous deux démontrent un effort de mise en visibilité réel et vérifié.
 
 **D — Digital pur, exposition structurellement faible**
-Direct Assurance, Lovys, Acheel, Luko (désormais Allianz Direct), Alan, Mila. Modèle inbound ou intermédié qui limite mécaniquement l'exposition — mais Direct Assurance et Lovys n'ont, à ce stade, aucune communication dédiée à la réforme, ce qui reste un angle mort de communication plutôt qu'un problème de conformité.
+Direct Assurance, LEOCARE, Lovys, Acheel, Luko (désormais Allianz Direct), Alan, Mila. Modèle inbound ou intermédié qui limite mécaniquement l'exposition — mais Direct Assurance, LEOCARE et Lovys n'ont, à ce stade, aucune communication *dédiée* à la réforme (voir correction §5bis pour LEOCARE), ce qui reste un angle mort de communication plutôt qu'un problème de conformité.
 
 **E — Hors champ B2C, confirmé**
 Seyna et **Descartes Insurance** (doute levé cette semaine — porteur de risque corporate, pas un acteur grand public) sont hors périmètre de cette loi, qui ne vise que les consommateurs personnes physiques.
@@ -78,11 +78,12 @@ Seyna et **Descartes Insurance** (doute levé cette semaine — porteur de risqu
 | Acteur | Statut | URL |
 |---|---|---|
 | **MAAF** | Confirmé, clair, à jour | https://www.faq-maaf.fr/contenu/a-propos-de-maaf/contacter-maaf/demarchage-telephonique-quels-changements-en-aout-2026 |
-| **LEOCARE** | Confirmé, renouvelé le 16/07/2026 | https://leocare.eu/fr/blog/nouvelle-loi-demarchage-telephonique/ |
 | **Generali** | Existe mais orienté B2B (clients professionnels/courtiers), pas grand public | https://www.generali.fr/professionnel/actu/regles-demarchage-telephonique/ |
 | **GMF** | Existe mais noyé dans les mentions légales (section 8), pas une FAQ dédiée | https://www.gmf.fr/mentions-legales |
 
-Les 15 autres acteurs : aucun article/FAQ pédagogique grand public identifié à ce jour.
+**LEOCARE retiré de ce tableau (correction §5bis)** : son article n'est pas dédié à cette loi — il traite à titre principal d'une mesure différente (bouclier anti-usurpation Arcep, 1ᵉʳ janvier 2026).
+
+Les 16 autres acteurs : aucun article/FAQ pédagogique grand public dédié à la loi opt-in identifié à ce jour.
 
 ### 4.2 Case à cocher / texte de consentement explicite identifié
 
@@ -113,6 +114,20 @@ Les 15 autres acteurs : aucun article/FAQ pédagogique grand public identifié �
 8. **Descartes Insurance : identité enfin résolue.** C'est un porteur de risque ACPR 100 % corporate (cyber, risques techniques, agriculture), sœur de Descartes Underwriting — aucune activité B2C. Recommandation : le conserver dans le périmètre avec un statut « hors champ » explicite plutôt que de le traiter comme un concurrent actif, pour éviter de fausser les statistiques globales du panel.
 9. **Generali : nouvelle URL identifiée pour l'article pédagogique** (l'ancienne renvoie une erreur 403) et **premier texte de consentement concret trouvé** sur un formulaire d'agence.
 10. **Direct Assurance : confirmation que son contenu « anti-démarchage » date de 2016** (lancement de Bloctel), non actualisé pour la réforme 2026 — nuance importante par rapport à une lecture superficielle qui aurait pu le compter comme communication dédiée.
+11. **LEOCARE reclassé — voir correction ci-dessous.**
+
+---
+
+## 5bis. Correction : LEOCARE ne doit pas être compté comme « conforme »
+
+Une relecture du 10/09 (même jour, après un signalement) a identifié une erreur dans la première version de cette édition : LEOCARE avait été classé parmi les acteurs ayant une communication pédagogique dédiée à la loi du 11 août, sur la base de son article « Appels indésirables : un nouveau bouclier se met en place le 1er janvier ».
+
+En relisant l'article en intégralité (les deux URL précédemment citées — `loi-fin-demarchage-telephonique` et `nouvelle-loi-demarchage-telephonique` — pointent en réalité vers la **même page**), il apparaît que son sujet **principal** est une mesure entièrement différente : le bouclier anti-usurpation de l'**Arcep**, qui impose l'affichage « numéro masqué » pour les numéros usurpés à partir du **1ᵉʳ janvier 2026**. La loi du 11 août sur le consentement préalable au démarchage téléphonique n'y est mentionnée que dans une section secondaire (« Et la loi dans tout ça ? »), en fin d'article, comme contexte complémentaire — pas comme sujet de l'article.
+
+**Correction appliquée :**
+- LEOCARE est retiré du tableau des « articles pédagogiques dédiés » (§4.1).
+- LEOCARE reste classé en exposition « faible » (modèle digital, structurellement peu concerné), mais son statut de communication passe de « Oui, confirmé » à « Non — pas de communication dédiée à cette loi précise identifiée à ce jour ».
+- Aucun autre acteur de ce rapport n'a été confondu de cette façon avec le bouclier Arcep — vérification spécifique faite sur ce point pour GMF, MAAF, MACIF, MMA, Allianz, Generali, Crédit Mutuel (tous bien centrés sur la loi du 11 août dans les citations retenues).
 
 ---
 
