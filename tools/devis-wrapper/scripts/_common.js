@@ -27,6 +27,15 @@ const COOKIE_BANNER_BUTTON_TEXT = [
   'tout accepter', 'accepter et fermer', 'accepter tout', "j'accepte tout",
   'accepter', 'autoriser', 'ok pour moi', "j'ai compris",
 ]
+// Quand un mur de données identifiantes est atteint (ex: plaque d'immatriculation),
+// on cherche une voie de contournement qui ne demande PAS de donnée identifiante
+// avant d'abandonner — ex: choisir la marque/le modèle du véhicule à la main plutôt
+// que de fabriquer une plaque. Rien ici n'est saisi, seulement cliqué.
+const NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT = [
+  'marque et modèle', 'marque, modèle', 'rechercher par marque',
+  'sans plaque', "je ne connais pas ma plaque", "je n'ai pas ma plaque",
+  'saisir manuellement', 'saisie manuelle',
+]
 
 async function scanConsentCheckboxes(page) {
   return page.evaluate(({ keywords }) => {
@@ -135,8 +144,17 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
     })
 
     if (piiWall.length > 0) {
+      const altPathLabel = await clickFirstMatchingButton(page, NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT)
+      if (altPathLabel) {
+        // On ne saisit toujours rien : juste un clic vers une voie qui ne
+        // demande pas de donnée identifiante (ex: choix marque/modèle au
+        // lieu de la plaque). On continue le parcours sur cette base.
+        steps[steps.length - 1].tookNonIdentifyingAlternativePath = altPathLabel
+        await sleep(1000)
+        continue
+      }
       steps[steps.length - 1].stoppedReason =
-        'Mur de données personnelles atteint — arrêt volontaire (pas de saisie de données fabriquées).'
+        'Mur de données personnelles/identifiantes atteint, aucune voie de contournement trouvée — arrêt volontaire (pas de saisie de données fabriquées).'
       break
     }
 
