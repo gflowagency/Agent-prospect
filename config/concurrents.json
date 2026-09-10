@@ -24,8 +24,8 @@
     { "nom": "Luko", "site": "https://www.luko.eu", "segment": "digital_pur" },
     { "nom": "Crédit Mutuel", "site": "https://www.creditmutuel.fr", "segment": "bancassurance" },
     { "nom": "Alan", "site": "https://alan.com/fr", "segment": "digital_pur", "note": "néo-assureur agréé ACPR, santé — ajouté 2026-08-12" },
-    { "nom": "Seyna", "site": "https://www.seyna.co", "segment": "porteur_de_risque_b2b", "note": "néo-assureur agréé ACPR, porteur de risque pour insurtechs (B2B, pas de distribution directe grand public) — ajouté 2026-08-12" },
-    { "nom": "Descartes Insurance", "site": "https://descartesunderwriting.com", "segment": "parametrique_b2b", "note": "néo-assureur agréé ACPR, assurance paramétrique (climat) — ajouté 2026-08-12" },
+    { "nom": "Seyna", "site": "https://www.seyna.eu", "segment": "porteur_de_risque_b2b", "note": "néo-assureur agréé ACPR, porteur de risque pour insurtechs (B2B, pas de distribution directe grand public) — ajouté 2026-08-12 ; URL corrigée le 2026-09-10 (.eu, pas .co)" },
+    { "nom": "Descartes Insurance", "site": "https://descartesunderwriting.com/about/descartes-insurance", "segment": "hors_perimetre_b2b", "note": "identité clarifiée le 2026-09-10 : porteur de risque ACPR 100% corporate (cyber, risques techniques, agriculture), sœur de Descartes Underwriting (MGA) — AUCUNE activité B2C, hors champ de la loi opt-in qui vise les consommateurs. Conservé dans le périmètre à titre de veille passive uniquement." },
     { "nom": "Mila", "site": "https://www.mila.fr", "segment": "digital_pur", "note": "néo-assureur agréé ACPR, assurance de niche — ajouté 2026-08-12" }
   ]
 }
