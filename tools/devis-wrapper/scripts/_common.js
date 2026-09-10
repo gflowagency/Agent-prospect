@@ -129,6 +129,30 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+// Diagnostic temporaire : liste tous les éléments interactifs visibles
+// (input, textarea, [contenteditable], boutons, liens) avec assez de détail
+// pour comprendre pourquoi un champ ou un bouton n'est pas détecté par les
+// heuristiques ci-dessus, sans dépendre d'une capture d'écran à relire à
+// l'œil. À retirer une fois les heuristiques stabilisées sur les sites cibles.
+async function describeInteractiveElements(page) {
+  return page.evaluate(() => {
+    function short(s, n = 120) { return (s || '').trim().replace(/\s+/g, ' ').slice(0, n) }
+    const els = Array.from(document.querySelectorAll('input, textarea, [contenteditable="true"], button, a, [role="button"]'))
+      .filter((el) => el.offsetParent !== null)
+      .slice(0, 40)
+    return els.map((el) => ({
+      tag: el.tagName.toLowerCase(),
+      type: el.getAttribute('type') || null,
+      placeholder: el.getAttribute('placeholder') || null,
+      name: el.getAttribute('name') || null,
+      id: el.id || null,
+      ariaLabel: el.getAttribute('aria-label') || null,
+      text: short(el.innerText || el.value || ''),
+      parentText: short(el.parentElement ? el.parentElement.innerText : ''),
+    }))
+  })
+}
+
 async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
   const steps = []
   // "networkidle2" (syntaxe Puppeteer, pas "networkidle" de Playwright) : Browserless
@@ -141,7 +165,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
 
   for (let i = 0; i < maxSteps; i++) {
     await sleep(1500)
-    const [consentMatches, piiWall, screenshot] = await Promise.all([
+    const [consentMatches, piiWall, screenshot, interactiveElements] = await Promise.all([
       scanConsentCheckboxes(page),
       detectPiiWall(page),
       // encoding: 'base64' demandé directement à Puppeteer : dans le sandbox
@@ -150,6 +174,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       // produit un Array.prototype.toString() (liste d'octets séparés par des
       // virgules) au lieu d'un vrai base64 — bug trouvé sur un run réel.
       page.screenshot({ type: 'jpeg', quality: 60, encoding: 'base64' }),
+      describeInteractiveElements(page),
     ])
 
     steps.push({
@@ -159,6 +184,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       consentCheckboxesFound: consentMatches,
       piiFieldsRequiredHere: piiWall,
       screenshotBase64Jpeg: screenshot,
+      debugInteractiveElements: interactiveElements,
     })
 
     if (piiWall.length > 0) {
