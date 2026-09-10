@@ -34,7 +34,8 @@ const COOKIE_BANNER_BUTTON_TEXT = [
 const NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT = [
   'marque et modèle', 'marque, modèle', 'rechercher par marque',
   'sans plaque', "je ne connais pas ma plaque", "je n'ai pas ma plaque",
-  'saisir manuellement', 'saisie manuelle',
+  'saisir manuellement', 'saisie manuelle', 'voir toutes les marques',
+  'toutes les marques',
 ]
 
 async function scanConsentCheckboxes(page) {
@@ -125,6 +126,28 @@ async function clickFirstMatchingButton(page, textOptions) {
   }, textOptions)
 }
 
+// Dernier recours pour une grille de sélection à base de logos (ex: choix de
+// marque de véhicule) : boutons sans texte, juste une image. Choisir un
+// élément d'une liste prédéfinie (marque, modèle...) n'est jamais une donnée
+// personnelle fabriquée -- contrairement à saisir du texte libre.
+async function clickFirstLogoOnlyButton(page) {
+  return page.evaluate(() => {
+    const candidates = Array.from(document.querySelectorAll('button')).filter((el) => {
+      if (el.offsetParent === null) return false
+      const hasImg = el.querySelector('img, svg')
+      const hasText = (el.innerText || '').trim().length > 0
+      return hasImg && !hasText
+    })
+    const el = candidates[0]
+    if (!el) return null
+    const img = el.querySelector('img')
+    const label = (img && (img.alt || img.getAttribute('src'))) || 'logo sans texte'
+    el.scrollIntoView({ block: 'center' })
+    el.click()
+    return label.slice(0, 200)
+  })
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -206,7 +229,13 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       break
     }
 
-    const clickedLabel = await clickFirstMatchingButton(page, NEXT_BUTTON_TEXT)
+    let clickedLabel = await clickFirstMatchingButton(page, NEXT_BUTTON_TEXT)
+    if (!clickedLabel) {
+      // Grille de sélection par logos (marque de véhicule...) : pas de texte à
+      // matcher, mais choisir un item d'une liste prédéfinie n'est pas une
+      // donnée personnelle fabriquée.
+      clickedLabel = await clickFirstLogoOnlyButton(page)
+    }
     if (!clickedLabel) {
       steps[steps.length - 1].stoppedReason = 'Aucun bouton "suivant/continuer" détecté — fin du parcours automatisable sans données.'
       break

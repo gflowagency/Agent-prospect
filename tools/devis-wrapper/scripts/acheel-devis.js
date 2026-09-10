@@ -10,6 +10,6 @@
 const ENTRY_URL = 'https://www.acheel.com/subscribe/auto'
 
 export default async function ({ page }) {
-  const result = await runDevisWalk(page, { entryUrl: ENTRY_URL, target: 'acheel-devis', maxSteps: 6 })
+  const result = await runDevisWalk(page, { entryUrl: ENTRY_URL, target: 'acheel-devis', maxSteps: 12 })
   return { data: result, type: 'application/json' }
 }
