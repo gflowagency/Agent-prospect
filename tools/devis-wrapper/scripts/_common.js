@@ -187,16 +187,20 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       debugInteractiveElements: interactiveElements,
     })
 
+    // On tente TOUJOURS la voie de contournement non-identifiante en premier,
+    // qu'un mur ait été détecté ou non par detectPiiWall() (cette détection est
+    // une heuristique imparfaite — des champs comme une plaque d'immatriculation
+    // dans un composant custom peuvent lui échapper). Cliquer sur "marque et
+    // modèle" plutôt que "plaque" est sans risque par construction : ces
+    // libellés ne mènent jamais à une saisie de donnée identifiante.
+    const altPathLabel = await clickFirstMatchingButton(page, NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT)
+    if (altPathLabel) {
+      steps[steps.length - 1].tookNonIdentifyingAlternativePath = altPathLabel
+      await sleep(1000)
+      continue
+    }
+
     if (piiWall.length > 0) {
-      const altPathLabel = await clickFirstMatchingButton(page, NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT)
-      if (altPathLabel) {
-        // On ne saisit toujours rien : juste un clic vers une voie qui ne
-        // demande pas de donnée identifiante (ex: choix marque/modèle au
-        // lieu de la plaque). On continue le parcours sur cette base.
-        steps[steps.length - 1].tookNonIdentifyingAlternativePath = altPathLabel
-        await sleep(1000)
-        continue
-      }
       steps[steps.length - 1].stoppedReason =
         'Mur de données personnelles/identifiantes atteint, aucune voie de contournement trouvée — arrêt volontaire (pas de saisie de données fabriquées).'
       break
