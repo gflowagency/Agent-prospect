@@ -28,6 +28,31 @@ function requireKey(req, res, next) {
   next()
 }
 
+// Construit context.formData à partir des paramètres de requête, UNIQUEMENT
+// nom/prenom/email/naissance (jamais de téléphone, adresse, plaque ou permis
+// ici — ces champs restent un mur d'arrêt normal côté scripts). Rien de tout
+// ceci n'est jamais écrit sur disque ni journalisé : ça ne fait que transiter
+// vers le POST /function envoyé à Browserless.
+function buildFormData(query) {
+  const formData = {}
+  if (query.nom) formData.nom = String(query.nom)
+  if (query.prenom) formData.prenom = String(query.prenom)
+  if (query.email) formData.email = String(query.email)
+  if (query.naissance) {
+    const raw = String(query.naissance)
+    const fr = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+    const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+    if (fr) {
+      formData.naissanceFr = raw
+      formData.naissanceIso = `${fr[3]}-${fr[2]}-${fr[1]}`
+    } else if (iso) {
+      formData.naissanceIso = raw
+      formData.naissanceFr = `${iso[3]}/${iso[2]}/${iso[1]}`
+    }
+  }
+  return Object.keys(formData).length > 0 ? formData : null
+}
+
 app.get('/health', (req, res) => res.json({ ok: true }))
 
 app.get('/targets', requireKey, (req, res) => {
@@ -57,13 +82,14 @@ app.get('/run/:target', requireKey, async (req, res) => {
   // système de fichiers pour résoudre un require() relatif entre deux fichiers.
   const code = fs.readFileSync(COMMON_SCRIPT, 'utf8') + '\n\n' + fs.readFileSync(scriptPath, 'utf8')
   const timeoutMs = Number(req.query.timeoutMs) || 120000
+  const formData = buildFormData(req.query)
 
   const functionUrl = `${BROWSERLESS_URL.replace(/\/$/, '')}/function${BROWSERLESS_TOKEN ? `?token=${encodeURIComponent(BROWSERLESS_TOKEN)}` : ''}`
 
   try {
     const result = await postJson(functionUrl, {
       code,
-      context: { target },
+      context: { target, formData },
     }, timeoutMs)
     res.status(200).json(result)
   } catch (err) {

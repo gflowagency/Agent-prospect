@@ -8,7 +8,12 @@
 
 const ENTRY_URL = 'https://www.macif.fr/assurance/particuliers/assurance-auto-moto-scooter/assurance-automobile/devis-automobile-en-ligne'
 
-export default async function ({ page }) {
-  const result = await runDevisWalk(page, { entryUrl: ENTRY_URL, target: 'macif-devis', maxSteps: 6 })
+export default async function ({ page, context }) {
+  const result = await runDevisWalk(page, {
+    entryUrl: ENTRY_URL,
+    target: 'macif-devis',
+    maxSteps: 6,
+    formData: context && context.formData,
+  })
   return { data: result, type: 'application/json' }
 }

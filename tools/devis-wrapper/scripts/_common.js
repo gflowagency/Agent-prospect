@@ -4,9 +4,13 @@
 // bac à sable Browserless exécute un seul blob de code sans accès au système
 // de fichiers local pour résoudre un require() relatif.
 //
-// Garde-fou : jamais de saisie de données personnelles fabriquées. On avance
-// uniquement par clics génériques et on s'arrête dès qu'un champ
-// nom/téléphone/email/adresse devient obligatoire pour continuer.
+// Garde-fou : jamais de saisie de données personnelles FABRIQUÉES. On avance
+// par clics génériques et on s'arrête dès qu'un champ identifiant devient
+// obligatoire pour continuer -- SAUF si l'appelant a explicitement fourni ses
+// propres vraies données via `formData` (nom/prénom/email/date de naissance
+// uniquement, jamais de téléphone ici) : dans ce cas seulement, ces champs
+// précis sont remplis avec les valeurs fournies, jamais inventées. Tout champ
+// sans valeur correspondante fournie reste un mur d'arrêt normal.
 
 const CONSENT_KEYWORDS = [
   'téléphon', 'telephon', 'appel', 'démarch', 'demarch', 'rappel',
@@ -79,7 +83,9 @@ async function detectPiiWall(page) {
     const skipTypes = new Set(['hidden', 'checkbox', 'radio', 'submit', 'button'])
     const inputs = Array.from(document.querySelectorAll('input, textarea')).filter((el) => {
       if (el.tagName === 'INPUT' && skipTypes.has((el.type || '').toLowerCase())) return false
-      return el.offsetParent !== null
+      // !el.value : un champ déjà rempli (via fillKnownFields, avec de vraies
+      // données explicitement fournies par l'appelant) n'est plus un mur.
+      return el.offsetParent !== null && !el.value
     })
     // Sur des formulaires custom (React/masques de saisie), le texte qui
     // explique le champ n'est souvent PAS un <label for="..."> formel mais un
@@ -111,11 +117,89 @@ async function detectPiiWall(page) {
   }, { keywords: PII_FIELD_KEYWORDS })
 }
 
-async function clickFirstMatchingButton(page, textOptions) {
-  return page.evaluate((options) => {
+// Remplit UNIQUEMENT nom/prénom/email/date de naissance, et UNIQUEMENT si une
+// valeur correspondante a été explicitement fournie dans formData (jamais de
+// valeur inventée). Aucun autre champ (téléphone, adresse, plaque, permis...)
+// n'est jamais rempli ici, quelle que soit formData.
+async function fillKnownFields(page, formData) {
+  if (!formData) return []
+  return page.evaluate(({ formData }) => {
+    function setNativeValue(el, value) {
+      // Les inputs contrôlés par React ignorent un simple el.value = ... :
+      // il faut passer par le setter natif puis déclencher un vrai événement
+      // 'input' pour que l'état React (et donc la validation du bouton
+      // suivant) se mette à jour.
+      const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype
+      const setter = Object.getOwnPropertyDescriptor(proto, 'value').set
+      setter.call(el, value)
+      el.dispatchEvent(new Event('input', { bubbles: true }))
+      el.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+    function nearbyText(el) {
+      let node = el.parentElement
+      let combined = ''
+      for (let depth = 0; node && depth < 4; depth++) {
+        const text = (node.innerText || '').trim()
+        if (text.length === 0) { node = node.parentElement; continue }
+        if (text.length > 400) break
+        combined += ' ' + text
+        node = node.parentElement
+      }
+      return combined
+    }
+
+    const skipTypes = new Set(['hidden', 'checkbox', 'radio', 'submit', 'button'])
+    const inputs = Array.from(document.querySelectorAll('input, textarea')).filter((el) => {
+      if (el.tagName === 'INPUT' && skipTypes.has((el.type || '').toLowerCase())) return false
+      return el.offsetParent !== null && !el.value
+    })
+
+    const filled = []
+    for (const input of inputs) {
+      // Signal propre au champ d'abord (label/placeholder/aria-label/name/id) ;
+      // repli sur le texte voisin UNIQUEMENT si le champ n'a aucun signal
+      // propre (sinon deux champs voisins comme "Nom"/"Prénom" se marchent
+      // dessus, leur texte voisin se chevauchant).
+      const ownSignal = (
+        (input.labels && input.labels[0] && input.labels[0].innerText) ||
+        input.placeholder || input.getAttribute('aria-label') || input.name || input.id || ''
+      ).toLowerCase()
+      const context = ownSignal || nearbyText(input).toLowerCase()
+
+      let value = null
+      let field = null
+      if (formData.prenom && (context.includes('prénom') || context.includes('prenom'))) {
+        value = formData.prenom; field = 'prenom'
+      } else if (formData.nom && context.includes('nom') && !context.includes('prénom') && !context.includes('prenom')) {
+        value = formData.nom; field = 'nom'
+      } else if (formData.email && (context.includes('email') || context.includes('e-mail') || input.type === 'email')) {
+        value = formData.email; field = 'email'
+      } else if (formData.naissanceIso && context.includes('naissance')) {
+        value = input.type === 'date' ? formData.naissanceIso : (formData.naissanceFr || formData.naissanceIso)
+        field = 'naissance'
+      }
+
+      if (value) {
+        setNativeValue(input, value)
+        filled.push({ field, label: (input.placeholder || input.name || input.id || '').trim() })
+      }
+    }
+    return filled
+  }, { formData })
+}
+
+// excludeTexts : textes déjà cliqués plus tôt dans ce même parcours, à ne
+// jamais recliquer -- sans ça, un bouton dont le clic ne fait rien de
+// visible (ex: un "voir plus" qui reste affiché après coup) fait boucler le
+// parcours indéfiniment sur lui-même sans jamais progresser.
+async function clickFirstMatchingButton(page, textOptions, excludeTexts = []) {
+  return page.evaluate(({ options, excludeTexts }) => {
     const clickable = Array.from(document.querySelectorAll('button, a, [role="button"]'))
     for (const opt of options) {
-      const el = clickable.find((e) => (e.innerText || '').toLowerCase().includes(opt) && e.offsetParent !== null)
+      const el = clickable.find((e) => {
+        const text = (e.innerText || '').trim()
+        return text.toLowerCase().includes(opt) && e.offsetParent !== null && !excludeTexts.includes(text)
+      })
       if (el) {
         el.scrollIntoView({ block: 'center' })
         el.click()
@@ -123,7 +207,7 @@ async function clickFirstMatchingButton(page, textOptions) {
       }
     }
     return null
-  }, textOptions)
+  }, { options: textOptions, excludeTexts })
 }
 
 // Dernier recours pour une grille de sélection à base de logos (ex: choix de
@@ -176,7 +260,7 @@ async function describeInteractiveElements(page) {
   })
 }
 
-async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
+async function runDevisWalk(page, { entryUrl, target, maxSteps = 6, formData = null }) {
   const steps = []
   // "networkidle2" (syntaxe Puppeteer, pas "networkidle" de Playwright) : Browserless
   // expose une API façon Puppeteer sur /function.
@@ -186,8 +270,17 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
   const cookieBannerDismissed = await clickFirstMatchingButton(page, COOKIE_BANNER_BUTTON_TEXT)
   if (cookieBannerDismissed) await sleep(800)
 
+  // Textes déjà cliqués dans ce parcours : jamais recliqués (sinon un bouton
+  // dont le clic ne change rien de visible fait boucler indéfiniment, comme
+  // observé en réel sur "Voir toutes les marques" chez Acheel).
+  const clickedTexts = new Set()
+
   for (let i = 0; i < maxSteps; i++) {
     await sleep(1500)
+
+    const filledFields = await fillKnownFields(page, formData)
+    if (filledFields.length > 0) await sleep(300)
+
     const [consentMatches, piiWall, screenshot, interactiveElements] = await Promise.all([
       scanConsentCheckboxes(page),
       detectPiiWall(page),
@@ -204,6 +297,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       step: i + 1,
       url: page.url(),
       title: await page.title(),
+      filledKnownFields: filledFields,
       consentCheckboxesFound: consentMatches,
       piiFieldsRequiredHere: piiWall,
       screenshotBase64Jpeg: screenshot,
@@ -216,8 +310,9 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
     // dans un composant custom peuvent lui échapper). Cliquer sur "marque et
     // modèle" plutôt que "plaque" est sans risque par construction : ces
     // libellés ne mènent jamais à une saisie de donnée identifiante.
-    const altPathLabel = await clickFirstMatchingButton(page, NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT)
+    const altPathLabel = await clickFirstMatchingButton(page, NON_IDENTIFYING_ALTERNATIVE_PATH_TEXT, Array.from(clickedTexts))
     if (altPathLabel) {
+      clickedTexts.add(altPathLabel)
       steps[steps.length - 1].tookNonIdentifyingAlternativePath = altPathLabel
       await sleep(1000)
       continue
@@ -229,7 +324,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       break
     }
 
-    let clickedLabel = await clickFirstMatchingButton(page, NEXT_BUTTON_TEXT)
+    let clickedLabel = await clickFirstMatchingButton(page, NEXT_BUTTON_TEXT, Array.from(clickedTexts))
     if (!clickedLabel) {
       // Grille de sélection par logos (marque de véhicule...) : pas de texte à
       // matcher, mais choisir un item d'une liste prédéfinie n'est pas une
@@ -240,6 +335,7 @@ async function runDevisWalk(page, { entryUrl, target, maxSteps = 6 }) {
       steps[steps.length - 1].stoppedReason = 'Aucun bouton "suivant/continuer" détecté — fin du parcours automatisable sans données.'
       break
     }
+    clickedTexts.add(clickedLabel)
     steps[steps.length - 1].clickedToAdvance = clickedLabel
     await sleep(1000)
   }
