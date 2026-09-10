@@ -80,13 +80,31 @@ async function detectPiiWall(page) {
       if (el.tagName === 'INPUT' && skipTypes.has((el.type || '').toLowerCase())) return false
       return el.offsetParent !== null
     })
+    // Sur des formulaires custom (React/masques de saisie), le texte qui
+    // explique le champ n'est souvent PAS un <label for="..."> formel mais un
+    // simple paragraphe voisin dans le DOM. On remonte quelques niveaux de
+    // parents et on prend leur texte, en s'arrêtant dès qu'un conteneur est
+    // trop large (signe qu'on est sorti du champ pour englober toute la page).
+    function nearbyText(el) {
+      let node = el.parentElement
+      let combined = ''
+      for (let depth = 0; node && depth < 4; depth++) {
+        const text = (node.innerText || '').trim()
+        if (text.length === 0) { node = node.parentElement; continue }
+        if (text.length > 400) break
+        combined += ' ' + text
+        node = node.parentElement
+      }
+      return combined
+    }
+
     const hits = []
     for (const input of inputs) {
       const label =
         (input.labels && input.labels[0] && input.labels[0].innerText) ||
         input.placeholder || input.getAttribute('aria-label') || input.name || input.id || ''
-      const norm = label.toLowerCase()
-      if (keywords.some((k) => norm.includes(k))) hits.push(label.trim())
+      const combined = (label + ' ' + nearbyText(input)).toLowerCase()
+      if (keywords.some((k) => combined.includes(k))) hits.push(label.trim() || combined.trim().slice(0, 200))
     }
     return hits
   }, { keywords: PII_FIELD_KEYWORDS })
