@@ -1,0 +1,15 @@
+{
+  "name": "devis-wrapper",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wrapper GET-only autour de Browserless (/function, POST) pour permettre à des outils qui ne savent parler qu'en GET (Claude Code, connecteurs MCP) de déclencher des scripts Playwright multi-étapes sur les parcours de devis des assureurs concurrents.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/wrapper.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
