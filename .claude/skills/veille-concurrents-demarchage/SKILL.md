@@ -66,3 +66,18 @@ l'écriture des fichiers, du commit et de la mise à jour de la Pull Request.
   de la veille) mais le signaler clairement dans le résumé et dans le commit ("RAS depuis le <date>").
 - La liste des concurrents et le rappel réglementaire vivent dans `config/concurrents.json` — à modifier là
   si le périmètre doit évoluer, pas dans le script du workflow.
+- **Méthodologie d'analyse (affinée le 11/09/2026)** : la constante `METHODOLOGIE` dans le workflow encode
+  les règles suivantes, apprises en corrigeant plusieurs cas réels (GMF, LEOCARE, AXA, Generali) — à ne pas
+  contourner lors d'une prochaine édition ou d'une modification du workflow :
+  1. Le document de référence général du concurrent (politique de données perso, CGU) prime toujours sur
+     une exception locale isolée (page d'une seule agence) — en cas de contradiction, le document général
+     détermine le verdict.
+  2. Vérifier la base légale déclarée pour le démarchage téléphonique, pas juste si le sujet est mentionné :
+     "intérêt légitime" ou un renvoi vers Bloctel (disparu le 11/08/2026) sont NON conformes à la loi
+     opt-in, même si le texte est par ailleurs bien écrit et à jour par ailleurs.
+  3. Le contexte d'une case à cocher de consentement compte autant que son texte — une case dans un vrai
+     parcours commercial (devis/souscription) est une preuve plus forte qu'une case noyée dans un
+     formulaire de contact générique (SAV/réclamation).
+  4. Une source doit être sur un domaine du concurrent lui-même — une prise de position d'un tiers (syndicat
+     professionnel, presse) ne doit jamais être présentée comme la position officielle du concurrent.
+  5. Quand rien n'est trouvé, l'écrire simplement, sans sur-justifier.
